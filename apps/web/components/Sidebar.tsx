@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export function Sidebar({ pathname }: { pathname: string }) {
   const items = [
-    ['/', '🏠 Tổng quan'],
+    ['/', '📊 Tổng quan'],
     ['/booking', '📅 Đặt phòng'],
     ['/calendar/month', '🗓️ Lịch tháng'],
     ['/calendar/day', '🕐 Lịch ngày'],
@@ -20,21 +20,22 @@ export function Sidebar({ pathname }: { pathname: string }) {
         </div>
       </div>
 
-      <div className="navList">
+      <nav className="navList">
         {items.map(([href, label]) => (
           <Link key={href} href={href} className={`navLink ${pathname === href ? 'active' : ''}`}>
             {label}
           </Link>
         ))}
-      </div>
+      </nav>
 
-      <div className="sideCard">
-        <h3>Role hỗ trợ</h3>
-        <ul>
-          <li>Nhân viên: đặt phòng, xem lịch</li>
-          <li>Người duyệt: approve / reject</li>
-          <li>Admin: quản lý phòng và theo dõi vận hành</li>
-        </ul>
+      <div style={{ marginTop: 'auto', paddingTop: 20 }}>
+        <div className="navLink" style={{ borderTop: '1px solid var(--border)', borderRadius: 0, padding: '20px 0' }}>
+          <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#e2e8f0', display: 'grid', placeItems: 'center', fontWeight: 600 }}>NV</div>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>Nguyễn Văn A</div>
+            <div style={{ fontSize: 12, color: 'var(--muted)' }}>Quản trị viên</div>
+          </div>
+        </div>
       </div>
     </aside>
   );

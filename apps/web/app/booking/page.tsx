@@ -73,45 +73,82 @@ export default function BookingPage() {
           <div className="sub">Chọn phòng, thời gian và người tạo booking</div>
 
           <div className="formGrid">
-            <input className="input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Tên cuộc họp" />
-            <textarea className="input" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Mô tả" />
+            <div>
+              <label className="sub" style={{ display: 'block', marginBottom: 8 }}>Tên cuộc họp</label>
+              <input className="input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="VD: Họp kick-off dự án" />
+            </div>
+
+            <div>
+              <label className="sub" style={{ display: 'block', marginBottom: 8 }}>Mục đích cuộc họp</label>
+              <textarea className="input" style={{ minHeight: 80 }} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Nhập nội dung ngắn gọn..." />
+            </div>
 
             <div className="row2">
-              <select className="input" value={form.roomId} onChange={(e) => setForm({ ...form, roomId: e.target.value })}>
-                {rooms.map((room) => (
-                  <option key={room.id} value={room.id}>{room.name} ({room.capacity} người)</option>
+              <div>
+                <label className="sub" style={{ display: 'block', marginBottom: 8 }}>Phòng họp</label>
+                <select className="input" value={form.roomId} onChange={(e) => setForm({ ...form, roomId: e.target.value })}>
+                  {rooms.map((room) => (
+                    <option key={room.id} value={room.id}>{room.name} ({room.capacity} người)</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="sub" style={{ display: 'block', marginBottom: 8 }}>Người đặt</label>
+                <select className="input" value={form.createdById} onChange={(e) => setForm({ ...form, createdById: e.target.value })}>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>{user.fullName}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="row2">
+              <div>
+                <label className="sub" style={{ display: 'block', marginBottom: 8 }}>Ngày họp</label>
+                <input className="input" type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+              </div>
+              <div>
+                <label className="sub" style={{ display: 'block', marginBottom: 8 }}>Số người tham dự</label>
+                <input className="input" type="number" min={1} value={form.attendeeCount} onChange={(e) => setForm({ ...form, attendeeCount: Number(e.target.value) })} />
+              </div>
+            </div>
+
+            <div className="row2">
+              <div>
+                <label className="sub" style={{ display: 'block', marginBottom: 8 }}>Giờ bắt đầu</label>
+                <input className="input" type="time" value={form.startTime} onChange={(e) => setForm({ ...form, startTime: e.target.value })} />
+              </div>
+              <div>
+                <label className="sub" style={{ display: 'block', marginBottom: 8 }}>Giờ kết thúc</label>
+                <input className="input" type="time" value={form.endTime} onChange={(e) => setForm({ ...form, endTime: e.target.value })} />
+              </div>
+            </div>
+
+            <div>
+              <label className="sub" style={{ display: 'block', marginBottom: 12 }}>Thiết bị cần thiết</label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+                {['Máy chiếu', 'Màn hình', 'Whiteboard', 'Video Conf', 'Loa', 'Micro'].map(item => (
+                  <label key={item} style={{ display: 'flex', gap: 8, fontSize: 14, alignItems: 'center', cursor: 'pointer' }}>
+                    <input type="checkbox" /> {item}
+                  </label>
                 ))}
-              </select>
-
-              <select className="input" value={form.createdById} onChange={(e) => setForm({ ...form, createdById: e.target.value })}>
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>{user.fullName}</option>
-                ))}
-              </select>
+              </div>
             </div>
 
-            <div className="row2">
-              <input className="input" type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
-              <input className="input" type="number" min={1} value={form.attendeeCount} onChange={(e) => setForm({ ...form, attendeeCount: Number(e.target.value) })} />
+            <div style={{ padding: '12px 0' }}>
+              <label style={{ display: 'flex', gap: 8, alignItems: 'center', fontWeight: 500, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={form.requiresApproval}
+                  onChange={(e) => setForm({ ...form, requiresApproval: e.target.checked })}
+                />
+                Yêu cầu phê duyệt từ cấp trên
+              </label>
             </div>
 
-            <div className="row2">
-              <input className="input" type="time" value={form.startTime} onChange={(e) => setForm({ ...form, startTime: e.target.value })} />
-              <input className="input" type="time" value={form.endTime} onChange={(e) => setForm({ ...form, endTime: e.target.value })} />
-            </div>
+            <button className="btn" style={{ width: '100%', padding: '14px' }} onClick={submit}>Gửi yêu cầu đặt phòng</button>
 
-            <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <input
-                type="checkbox"
-                checked={form.requiresApproval}
-                onChange={(e) => setForm({ ...form, requiresApproval: e.target.checked })}
-              />
-              Yêu cầu phê duyệt
-            </label>
-
-            <button className="btn" onClick={submit}>Tạo booking</button>
-
-            {message ? <div className="sub" style={{ color: '#fff' }}>{message}</div> : null}
+            {message ? <div className="pill ok" style={{ textAlign: 'center', marginTop: 12 }}>{message}</div> : null}
           </div>
         </section>
 
