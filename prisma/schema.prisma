@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  EMPLOYEE
+  APPROVER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  CHECKED_IN
+  EXPIRED
+}
+
+enum ApprovalDecision {
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id          String      @id @default(uuid())
+  email       String      @unique
+  fullName    String
+  role        Role
+  department  String?
+  createdAt   DateTime    @default(now())
+  bookings    Booking[]   @relation("CreatedBookings")
+  approvals   Approval[]  @relation("ApproverActions")
+}
+
+model MeetingRoom {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  location    String
+  floor       String
+  capacity    Int
+  status      String      @default("ACTIVE")
+  description String?
+  imageUrl    String?
+  amenities   RoomAmenity[]
+  bookings    Booking[]
+  createdAt   DateTime    @default(now())
+}
+
+model RoomAmenity {
+  id        String      @id @default(uuid())
+  roomId     String
+  room       MeetingRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  name      String
+}
+
+model Booking {
+  id               String         @id @default(uuid())
+  title            String
+  description      String?
+  roomId           String
+  room             MeetingRoom    @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  createdById      String
+  createdBy        User           @relation("CreatedBookings", fields: [createdById], references: [id], onDelete: Restrict)
+  startTime        DateTime
+  endTime          DateTime
+  attendeeCount    Int
+  status           BookingStatus  @default(PENDING)
+  requiresApproval Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  approvals        Approval[]
+  checkins         Checkin[]
+}
+
+model Approval {
+  id          String           @id @default(uuid())
+  bookingId   String
+  booking     Booking          @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  approverId  String
+  approver    User             @relation("ApproverActions", fields: [approverId], references: [id], onDelete: Restrict)
+  decision    ApprovalDecision
+  comment     String?
+  decidedAt   DateTime         @default(now())
+}
+
+model Checkin {
+  id           String    @id @default(uuid())
+  bookingId     String
+  booking       Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  checkedInById String
+  checkedInAt   DateTime @default(now())
+  method        String   @default("MANUAL")
+}
