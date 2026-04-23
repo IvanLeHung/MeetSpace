@@ -14,7 +14,9 @@ export function PageShell({
 }) {
   return (
     <div className="pageShell">
-      <Sidebar pathname={pathname} />
+      <React.Suspense fallback={<div className="sidebar" />}>
+        <Sidebar pathname={pathname} />
+      </React.Suspense>
       <main className="main">
         <Hero />
         {title ? <h2 style={{ marginTop: 0 }}>{title}</h2> : null}

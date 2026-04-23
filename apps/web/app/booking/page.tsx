@@ -116,11 +116,25 @@ export default function BookingPage() {
             <div className="row2">
               <div>
                 <label className="sub" style={{ display: 'block', marginBottom: 8 }}>Giờ bắt đầu</label>
-                <input className="input" type="time" value={form.startTime} onChange={(e) => setForm({ ...form, startTime: e.target.value })} />
+                <select className="input" value={form.startTime} onChange={(e) => setForm({ ...form, startTime: e.target.value })}>
+                  {Array.from({ length: 22 }).map((_, i) => {
+                    const h = Math.floor(i / 2) + 8;
+                    const m = i % 2 === 0 ? '00' : '30';
+                    const time = `${h.toString().padStart(2, '0')}:${m}`;
+                    return <option key={time} value={time}>{time}</option>;
+                  })}
+                </select>
               </div>
               <div>
                 <label className="sub" style={{ display: 'block', marginBottom: 8 }}>Giờ kết thúc</label>
-                <input className="input" type="time" value={form.endTime} onChange={(e) => setForm({ ...form, endTime: e.target.value })} />
+                <select className="input" value={form.endTime} onChange={(e) => setForm({ ...form, endTime: e.target.value })}>
+                  {Array.from({ length: 22 }).map((_, i) => {
+                    const h = Math.floor((i + 1) / 2) + 8;
+                    const m = (i + 1) % 2 === 0 ? '00' : '30';
+                    const time = `${h.toString().padStart(2, '0')}:${m}`;
+                    return <option key={time} value={time}>{time}</option>;
+                  })}
+                </select>
               </div>
             </div>
 

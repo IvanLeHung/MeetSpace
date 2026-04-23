@@ -37,117 +37,127 @@ async function main() {
     }
   });
 
-  const lotus = await prisma.meetingRoom.create({
+  const room1 = await prisma.meetingRoom.create({
     data: {
-      name: 'Lotus Room',
-      location: 'Head Office',
-      floor: '8',
-      capacity: 12,
-      description: 'Premium room with large TV',
-      amenities: {
-        create: [{ name: 'TV 75"' }, { name: 'Zoom Room' }, { name: 'Whiteboard' }]
-      }
-    }
-  });
-
-  const sky = await prisma.meetingRoom.create({
-    data: {
-      name: 'Sky Room',
-      location: 'Head Office',
-      floor: '10',
+      name: 'Phòng họp lớn khối 1',
+      location: 'Tòa nhà A',
+      floor: '1',
       capacity: 20,
-      description: 'Large room for demos and cross-functional meetings',
+      description: 'Phòng họp lớn đầy đủ thiết bị',
       amenities: {
-        create: [{ name: 'Projector' }, { name: 'Conference Mic' }, { name: 'Speaker' }]
+        create: [{ name: 'Máy chiếu' }, { name: 'Video Conf' }, { name: 'Loa' }]
       }
     }
   });
 
-  const focus = await prisma.meetingRoom.create({
+  const room2 = await prisma.meetingRoom.create({
     data: {
-      name: 'Focus 3',
-      location: 'Head Office',
-      floor: '5',
-      capacity: 6,
-      description: 'Small collaboration room',
+      name: 'Phòng họp nhỏ khối 1',
+      location: 'Tòa nhà A',
+      floor: '1',
+      capacity: 8,
+      description: 'Phòng họp nhỏ cho team',
       amenities: {
-        create: [{ name: '4K Display' }, { name: 'Whiteboard' }]
+        create: [{ name: 'Màn hình' }, { name: 'Whiteboard' }]
+      }
+    }
+  });
+
+  const room3 = await prisma.meetingRoom.create({
+    data: {
+      name: 'Phòng họp lớn khối 2',
+      location: 'Tòa nhà B',
+      floor: '2',
+      capacity: 25,
+      description: 'Phòng họp lớn khối 2 hiện đại',
+      amenities: {
+        create: [{ name: 'Máy chiếu' }, { name: 'Màn hình' }, { name: 'Micro' }]
+      }
+    }
+  });
+
+  const room4 = await prisma.meetingRoom.create({
+    data: {
+      name: 'Phòng khánh tiết',
+      location: 'Tòa nhà A',
+      floor: '1',
+      capacity: 15,
+      description: 'Phòng tiếp khách VIP',
+      amenities: {
+        create: [{ name: 'Nội thất cao cấp' }, { name: 'Loa' }, { name: 'Micro' }]
       }
     }
   });
 
   const now = new Date();
-  const start1 = new Date(now);
-  start1.setHours(9, 0, 0, 0);
-  const end1 = new Date(now);
-  end1.setHours(10, 0, 0, 0);
+  
+  // Bookings for Room 1 (Current & Next)
+  const r1_start1 = new Date(now); r1_start1.setHours(9, 0, 0);
+  const r1_end1 = new Date(now); r1_end1.setHours(11, 0, 0);
+  const r1_start2 = new Date(now); r1_start2.setHours(13, 0, 0);
+  const r1_end2 = new Date(now); r1_end2.setHours(14, 30, 0);
 
-  const start2 = new Date(now);
-  start2.setHours(11, 0, 0, 0);
-  const end2 = new Date(now);
-  end2.setHours(12, 0, 0, 0);
+  // Bookings for Room 2 (Current)
+  const r2_start1 = new Date(now); r2_start1.setHours(8, 30, 0);
+  const r2_end1 = new Date(now); r2_end1.setHours(10, 30, 0);
 
-  const start3 = new Date(now);
-  start3.setHours(15, 30, 0, 0);
-  const end3 = new Date(now);
-  end3.setHours(16, 30, 0, 0);
+  // Bookings for Room 4 (Next)
+  const r4_start1 = new Date(now); r4_start1.setHours(14, 0, 0);
+  const r4_end1 = new Date(now); r4_end1.setHours(16, 0, 0);
 
-  const booking1 = await prisma.booking.create({
+  await prisma.booking.create({
     data: {
-      title: 'Daily Product Sync',
-      description: 'Team daily standup',
-      roomId: lotus.id,
+      title: 'Họp giao ban khối 1',
+      description: 'Họp đầu tuần',
+      roomId: room1.id,
       createdById: employee.id,
-      startTime: start1,
-      endTime: end1,
-      attendeeCount: 8,
+      startTime: r1_start1,
+      endTime: r1_end1,
+      attendeeCount: 15,
       status: BookingStatus.APPROVED,
       requiresApproval: false
     }
   });
 
-  const booking2 = await prisma.booking.create({
+  await prisma.booking.create({
     data: {
-      title: 'Client Demo',
-      description: 'Cross-team client demo',
-      roomId: sky.id,
+      title: 'Họp dự án Website',
+      description: 'Review thiết kế',
+      roomId: room1.id,
       createdById: employee.id,
-      startTime: start2,
-      endTime: end2,
-      attendeeCount: 14,
-      status: BookingStatus.PENDING,
-      requiresApproval: true
+      startTime: r1_start2,
+      endTime: r1_end2,
+      attendeeCount: 10,
+      status: BookingStatus.APPROVED,
+      requiresApproval: false
     }
   });
 
   await prisma.booking.create({
     data: {
-      title: 'Design Review',
-      description: 'Review mockups and flows',
-      roomId: focus.id,
+      title: 'Brainstorming Team',
+      description: 'Lên ý tưởng mới',
+      roomId: room2.id,
       createdById: employee.id,
-      startTime: start3,
-      endTime: end3,
+      startTime: r2_start1,
+      endTime: r2_end1,
       attendeeCount: 5,
-      status: BookingStatus.PENDING,
+      status: BookingStatus.APPROVED,
       requiresApproval: false
     }
   });
 
-  await prisma.approval.create({
+  await prisma.booking.create({
     data: {
-      bookingId: booking2.id,
-      approverId: approver.id,
-      decision: ApprovalDecision.APPROVED,
-      comment: 'Approved for client meeting'
-    }
-  });
-
-  await prisma.checkin.create({
-    data: {
-      bookingId: booking1.id,
-      checkedInById: employee.id,
-      method: 'MANUAL'
+      title: 'Tiếp đối tác nước ngoài',
+      description: 'Ký kết hợp đồng',
+      roomId: room4.id,
+      createdById: approver.id,
+      startTime: r4_start1,
+      endTime: r4_end1,
+      attendeeCount: 10,
+      status: BookingStatus.APPROVED,
+      requiresApproval: true
     }
   });
 
